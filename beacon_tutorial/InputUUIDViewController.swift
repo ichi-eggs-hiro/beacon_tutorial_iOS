@@ -195,7 +195,7 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         txtUUIDb5 = UITextField(frame: CGRectMake(50, offset, 240,30))
         txtUUIDb5.text = "XXXXXXXXXXXX"
         txtUUIDb5.delegate = self
-        txtUUIDb5.tag = 4
+        txtUUIDb5.tag = 5
         txtUUIDb5.borderStyle = UITextBorderStyle.RoundedRect
         txtUUIDb5.keyboardType = UIKeyboardType.ASCIICapable
         scrView.addSubview(txtUUIDb5)

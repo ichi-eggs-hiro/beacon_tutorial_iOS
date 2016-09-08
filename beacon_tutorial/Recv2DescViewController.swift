@@ -39,10 +39,6 @@ class Recv2DescViewController: UIViewController {
         self.major = appDelegate.scan_major
         self.minor = appDelegate.scan_minor
 
-        self.uuid = NSUUID(UUIDString: "48534442-4C45-4144-80C0-1800FFFFFFFF")
-        self.major = -1
-        self.minor = -1
-
         // Controllerのタイトルを設定する.
         self.title = "ビーコン距離測定（説明)"
         
