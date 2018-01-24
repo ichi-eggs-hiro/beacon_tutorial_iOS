@@ -15,7 +15,7 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
     // CoreLocation
     var locationManager:CLLocationManager!
     var beaconRegion:CLBeaconRegion!
-    var uuid : NSUUID!
+    var uuid : UUID!
     var major : NSNumber = -1
     var minor : NSNumber = -1
     
@@ -30,10 +30,10 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         super.viewDidLoad()
         
         // App Delegate を取得
-        let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
         // Beacon に関する初期化
-        self.uuid = appDelegate.scan_uuid!
+        self.uuid = appDelegate.scan_uuid! as UUID!
         self.major = appDelegate.scan_major
         self.minor = appDelegate.scan_minor
         
@@ -50,13 +50,13 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, identifier:identifierStr as String)
         
         if( self.major != -1 && self.minor == -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, major: majorVal, identifier: identifierStr as String)
         }
 
         if( self.major != -1 && self.minor != -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
-            let minorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
+            let minorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: majorVal, minor: minorVal, identifier: identifierStr as String)
         }
 
@@ -71,19 +71,27 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         
         
         // iOS8 以降の　使用許可取得処理
-        if( UIDevice.currentDevice().systemVersion.hasPrefix("8") ) {
+        if( UIDevice.current.systemVersion.hasPrefix("8") ) {
             
             // セキュリティ認証のステータスを取得
             let status = CLLocationManager.authorizationStatus()
             
             // まだ認証が得られていない場合は、認証ダイアログを表示
-            if(status == CLAuthorizationStatus.NotDetermined) {
+            if(status == CLAuthorizationStatus.notDetermined) {
 
                 self.locationManager.requestAlwaysAuthorization()
 
             }
         }
+        // セキュリティ認証のステータスを取得
+        let status = CLLocationManager.authorizationStatus()
         
+        // まだ認証が得られていない場合は、認証ダイアログを表示
+        if(status == CLAuthorizationStatus.notDetermined) {
+            
+            self.locationManager.requestAlwaysAuthorization()
+            
+        }
         
         
         // 現在地の取得のための設定
@@ -101,40 +109,40 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         // 画面の初期化
         self.title = "ビーコン領域の観測"
         
-        self.scrView = UIScrollView(frame: CGRectMake(0,0,self.view.frame.width, self.view.frame.height) )
+        self.scrView = UIScrollView(frame: CGRect(x: 0,y: 0,width: self.view.frame.width, height: self.view.frame.height) )
         self.scrView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
         self.view.addSubview(self.scrView)
         
         var offset:CGFloat = 0.0
-        lblStatus = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        lblStatus = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblStatus.text = "STATUS="
-        lblStatus.font = UIFont.systemFontOfSize(20)
+        lblStatus.font = UIFont.systemFont(ofSize: 20)
         self.scrView.addSubview(lblStatus)
         offset += 25
         
-        lblUUID = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
-        lblUUID.text = "\(self.uuid.UUIDString)"
-        lblUUID.font = UIFont.systemFontOfSize(14)
+        lblUUID = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
+        lblUUID.text = "\(self.uuid.uuidString)"
+        lblUUID.font = UIFont.systemFont(ofSize: 14)
         self.scrView.addSubview(lblUUID)
         offset += 20
 
-        lblMajor = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 30, 20 ))
+        lblMajor = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 30, height: 20 ))
         if( self.major == -1 ) {
             lblMajor.text = "Major=未指定"
         } else {
             lblMajor.text = "Major=\(self.major)"
         }
-        lblMajor.font = UIFont.systemFontOfSize(16)
+        lblMajor.font = UIFont.systemFont(ofSize: 16)
         self.scrView.addSubview(lblMajor)
         offset += 20
 
-        lblMinor = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 30, 20 ))
+        lblMinor = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 30, height: 20 ))
         if( self.minor == -1 ) {
             lblMinor.text = "Minor=未指定"
         } else {
             lblMinor.text = "Minor=\(self.minor)"
         }
-        lblMinor.font = UIFont.systemFontOfSize(16)
+        lblMinor.font = UIFont.systemFont(ofSize: 16)
         self.scrView.addSubview(lblMinor)
         offset += 20
         
@@ -142,14 +150,14 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
     
     
     // 画面が再表示される時
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
         
         super.viewWillAppear( animated )
         
     }
     
     // 画面遷移等で非表示になる時
-    override func viewWillDisappear( animated: Bool ) {
+    override func viewWillDisappear( _ animated: Bool ) {
         super.viewDidDisappear( animated )
         
     }
@@ -164,29 +172,29 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
     /*
     (Delegate) 認証のステータスがかわったら呼び出される.
     */
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         
         print("didChangeAuthorizationStatus");
         
         // 認証のステータスをログで表示
         var statusStr = "";
         switch (status) {
-        case .NotDetermined:
+        case .notDetermined:
             statusStr = "NotDetermined"
-            if manager.respondsToSelector(#selector(CLLocationManager.requestAlwaysAuthorization)) {
+            if manager.responds(to: #selector(CLLocationManager.requestAlwaysAuthorization)) {
                 manager.requestAlwaysAuthorization()
             }
             
-        case .Restricted:
+        case .restricted:
             statusStr = "Restricted"
-        case .Denied:
+        case .denied:
             statusStr = "Denied"
-        case .AuthorizedAlways:
+        case .authorizedAlways:
             statusStr = "AuthorizedAlways"
             // 監視を開始する
-            manager.startMonitoringForRegion(self.beaconRegion);
+            manager.startMonitoring(for: self.beaconRegion);
             
-        case .AuthorizedWhenInUse:
+        case .authorizedWhenInUse:
             statusStr = "AuthorizedWhenInUse"
         }
         print(" CLAuthorizationStatus: \(statusStr)")
@@ -196,35 +204,35 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
     /*
     STEP2(Delegate): LocationManagerがモニタリングを開始したというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didStartMonitoringForRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
         
         print("didStartMonitoringForRegion");
         
         // STEP3: この時点でビーコンがすでにRegion内に入っている可能性があるので、その問い合わせを行う
         // (Delegate didDetermineStateが呼ばれる: STEP4)
-        manager.requestStateForRegion(self.beaconRegion);
+        manager.requestState(for: self.beaconRegion);
     }
     
     /*
     STEP4(Delegate): 現在リージョン内にいるかどうかの通知を受け取る.
     */
-    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion inRegion: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for inRegion: CLRegion) {
         
         print("locationManager: didDetermineState \(state)")
         
         switch (state) {
             
-        case .Inside: // リージョン内にいる
+        case .inside: // リージョン内にいる
             print("CLRegionStateInside:");
             
             // STEP5: すでに入っている場合は、そのままRangingをスタートさせる
             // (Delegate didRangeBeacons: STEP6)
-            manager.startRangingBeaconsInRegion(self.beaconRegion);
+            manager.startRangingBeacons(in: self.beaconRegion);
             
             self.lblStatus.text = "STATUS=Inside"
             break;
             
-        case .Outside:
+        case .outside:
             print("CLRegionStateOutside:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
 
@@ -232,7 +240,7 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
 
             break;
             
-        case .Unknown:
+        case .unknown:
             print("CLRegionStateUnknown:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
 
@@ -270,15 +278,15 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
     /*
     (Delegate) リージョン内に入ったというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("didEnterRegion");
         
 
         // UIAlertControllerを作成する.
-        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: "ビーコン領域に入りました。", preferredStyle: .Alert)
+        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: "ビーコン領域に入りました。", preferredStyle: .alert)
         
         // OKのアクションを作成する.
-        let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+        let myOkAction = UIAlertAction(title: "OK", style: .default) { action in
             print("Action OK!!")
         }
         
@@ -286,20 +294,20 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         myAlert.addAction(myOkAction)
         
         // UIAlertを発動する.
-        presentViewController(myAlert, animated: true, completion: nil)
+        present(myAlert, animated: true, completion: nil)
     }
     
     /*
     (Delegate) リージョンから出たというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         NSLog("didExitRegion");
         
         // UIAlertControllerを作成する.
-        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: "ビーコン領域から外に出ました。", preferredStyle: .Alert)
+        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: "ビーコン領域から外に出ました。", preferredStyle: .alert)
         
         // OKのアクションを作成する.
-        let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+        let myOkAction = UIAlertAction(title: "OK", style: .default) { action in
             print("Action OK!!")
         }
         
@@ -307,7 +315,7 @@ class Recv1ViewController: UIViewController,CLLocationManagerDelegate {
         myAlert.addAction(myOkAction)
         
         // UIAlertを発動する.
-        presentViewController(myAlert, animated: true, completion: nil)
+        present(myAlert, animated: true, completion: nil)
 
     }
     

@@ -23,7 +23,7 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
     var btnSet:UIButton!
     var btnReset:UIButton!
     var scrView:UIScrollView!
-    var scan_uuid:NSUUID!
+    var scan_uuid:UUID!
     
     var txtUUIDb1: UITextField!
     var txtUUIDb2: UITextField!
@@ -39,182 +39,182 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         super.viewDidLoad()
         
         // App Delegate を取得
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
-        self.scan_uuid = appDelegate.scan_uuid
+        self.scan_uuid = appDelegate.scan_uuid as UUID!
 
         // Controllerのタイトルを設定する.
         self.title = "監視UUID設定"
         
         // Viewの背景色を薄いグレー(#E6E6E6) に設定する。
-        self.scrView = UIScrollView(frame: CGRectMake(0,0,self.view.frame.width, self.view.frame.height) )
+        self.scrView = UIScrollView(frame: CGRect(x: 0,y: 0,width: self.view.frame.width, height: self.view.frame.height) )
         self.scrView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
         self.view.addSubview(self.scrView)
         
         var offset:CGFloat = 0.0
         
-        let lblDesc1:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc1:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc1.text = "監視対象ビーコン領域のUUID"
-        lblDesc1.textAlignment = NSTextAlignment.Left
-        lblDesc1.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc1.textAlignment = NSTextAlignment.left
+        lblDesc1.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc1.numberOfLines = 0
         lblDesc1.sizeToFit()
         scrView.addSubview(lblDesc1)
         offset += lblDesc1.frame.size.height + 10.0
 
-        lblFullUUID = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
-        lblFullUUID.text = self.scan_uuid.UUIDString
-        lblFullUUID.font = UIFont.systemFontOfSize(14)
-        lblFullUUID.textAlignment = NSTextAlignment.Left
-        lblFullUUID.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblFullUUID = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
+        lblFullUUID.text = self.scan_uuid.uuidString
+        lblFullUUID.font = UIFont.systemFont(ofSize: 14)
+        lblFullUUID.textAlignment = NSTextAlignment.left
+        lblFullUUID.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblFullUUID.numberOfLines = 0
         lblFullUUID.sizeToFit()
         scrView.addSubview(lblFullUUID)
         offset += lblFullUUID.frame.size.height + 15.0
         
-        let lblDesc2:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc2:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc2.text = "UUIDの変更は、以下に入力して「設定」をタップしてください。"
-        lblDesc2.textAlignment = NSTextAlignment.Left
-        lblDesc2.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc2.textAlignment = NSTextAlignment.left
+        lblDesc2.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc2.numberOfLines = 0
         lblDesc2.sizeToFit()
         scrView.addSubview(lblDesc2)
         offset += lblDesc2.frame.size.height + 15.0
 
-        let lblDesc3:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc3:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc3.text = "8桁"
-        lblDesc3.textAlignment = NSTextAlignment.Left
-        lblDesc3.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc3.textAlignment = NSTextAlignment.left
+        lblDesc3.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblDesc3)
         
-        txtUUIDb1 = UITextField(frame: CGRectMake(50, offset, 160,30))
+        txtUUIDb1 = UITextField(frame: CGRect(x: 50, y: offset, width: 160,height: 30))
         txtUUIDb1.text = "XXXXXXXX"
         txtUUIDb1.delegate = self
         txtUUIDb1.tag = 1
-        txtUUIDb1.borderStyle = UITextBorderStyle.RoundedRect
-        txtUUIDb1.keyboardType = UIKeyboardType.ASCIICapable
+        txtUUIDb1.borderStyle = UITextBorderStyle.roundedRect
+        txtUUIDb1.keyboardType = UIKeyboardType.asciiCapable
         scrView.addSubview(txtUUIDb1)
         
         offset += lblDesc3.frame.size.height + 5.0
         
-        lblErrUUIDb1 = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErrUUIDb1 = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErrUUIDb1.text = "エラーメッセージ"
-        lblErrUUIDb1.textColor = UIColor.redColor()
-        lblErrUUIDb1.textAlignment = NSTextAlignment.Left
-        lblErrUUIDb1.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErrUUIDb1.textColor = UIColor.red
+        lblErrUUIDb1.textAlignment = NSTextAlignment.left
+        lblErrUUIDb1.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErrUUIDb1)
 
         offset += lblErrUUIDb1.frame.size.height + 15.0
 
 
-        let lblDesc4:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc4:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc4.text = "4桁"
-        lblDesc4.textAlignment = NSTextAlignment.Left
-        lblDesc4.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc4.textAlignment = NSTextAlignment.left
+        lblDesc4.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblDesc4)
         
-        txtUUIDb2 = UITextField(frame: CGRectMake(50, offset, 80,30))
+        txtUUIDb2 = UITextField(frame: CGRect(x: 50, y: offset, width: 80,height: 30))
         txtUUIDb2.text = "XXXX"
         txtUUIDb2.delegate = self
         txtUUIDb2.tag = 2
-        txtUUIDb2.borderStyle = UITextBorderStyle.RoundedRect
-        txtUUIDb2.keyboardType = UIKeyboardType.ASCIICapable
+        txtUUIDb2.borderStyle = UITextBorderStyle.roundedRect
+        txtUUIDb2.keyboardType = UIKeyboardType.asciiCapable
 
         scrView.addSubview(txtUUIDb2)
         
         offset += lblDesc4.frame.size.height + 5.0
 
-        lblErrUUIDb2 = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErrUUIDb2 = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErrUUIDb2.text = "エラーメッセージ"
-        lblErrUUIDb2.textColor = UIColor.redColor()
-        lblErrUUIDb2.textAlignment = NSTextAlignment.Left
-        lblErrUUIDb2.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErrUUIDb2.textColor = UIColor.red
+        lblErrUUIDb2.textAlignment = NSTextAlignment.left
+        lblErrUUIDb2.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErrUUIDb2)
         
         offset += lblErrUUIDb2.frame.size.height + 15.0
 
 
-        let lblDesc5:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc5:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc5.text = "4桁"
-        lblDesc5.textAlignment = NSTextAlignment.Left
-        lblDesc5.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc5.textAlignment = NSTextAlignment.left
+        lblDesc5.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblDesc5)
 
-        txtUUIDb3 = UITextField(frame: CGRectMake(50, offset, 80,30))
+        txtUUIDb3 = UITextField(frame: CGRect(x: 50, y: offset, width: 80,height: 30))
         txtUUIDb3.text = "XXXX"
         txtUUIDb3.delegate = self
         txtUUIDb3.tag = 3
-        txtUUIDb3.borderStyle = UITextBorderStyle.RoundedRect
-        txtUUIDb3.keyboardType = UIKeyboardType.ASCIICapable
+        txtUUIDb3.borderStyle = UITextBorderStyle.roundedRect
+        txtUUIDb3.keyboardType = UIKeyboardType.asciiCapable
 
         scrView.addSubview(txtUUIDb3)
         
         offset += lblDesc5.frame.size.height + 5.0
         
-        lblErrUUIDb3 = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErrUUIDb3 = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErrUUIDb3.text = "エラーメッセージ"
-        lblErrUUIDb3.textColor = UIColor.redColor()
-        lblErrUUIDb3.textAlignment = NSTextAlignment.Left
-        lblErrUUIDb3.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErrUUIDb3.textColor = UIColor.red
+        lblErrUUIDb3.textAlignment = NSTextAlignment.left
+        lblErrUUIDb3.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErrUUIDb3)
         
         offset += lblErrUUIDb3.frame.size.height + 15.0
         
         
-        let lblDesc6:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc6:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc6.text = "4桁"
-        lblDesc6.textAlignment = NSTextAlignment.Left
-        lblDesc6.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc6.textAlignment = NSTextAlignment.left
+        lblDesc6.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblDesc6)
 
-        txtUUIDb4 = UITextField(frame: CGRectMake(50, offset, 80,30))
+        txtUUIDb4 = UITextField(frame: CGRect(x: 50, y: offset, width: 80,height: 30))
         txtUUIDb4.text = "XXXX"
         txtUUIDb4.delegate = self
         txtUUIDb4.tag = 4
-        txtUUIDb4.borderStyle = UITextBorderStyle.RoundedRect
-        txtUUIDb4.keyboardType = UIKeyboardType.ASCIICapable
+        txtUUIDb4.borderStyle = UITextBorderStyle.roundedRect
+        txtUUIDb4.keyboardType = UIKeyboardType.asciiCapable
         scrView.addSubview(txtUUIDb4)
 
         offset += lblDesc6.frame.size.height + 5.0
         
-        lblErrUUIDb4 = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErrUUIDb4 = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErrUUIDb4.text = "エラーメッセージ"
-        lblErrUUIDb4.textColor = UIColor.redColor()
-        lblErrUUIDb4.textAlignment = NSTextAlignment.Left
-        lblErrUUIDb4.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErrUUIDb4.textColor = UIColor.red
+        lblErrUUIDb4.textAlignment = NSTextAlignment.left
+        lblErrUUIDb4.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErrUUIDb4)
         
         offset += lblErrUUIDb4.frame.size.height + 15.0
 
-        let lblDesc7:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc7:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc7.text = "12桁"
-        lblDesc7.textAlignment = NSTextAlignment.Left
-        lblDesc7.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc7.textAlignment = NSTextAlignment.left
+        lblDesc7.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblDesc7)
         
-        txtUUIDb5 = UITextField(frame: CGRectMake(50, offset, 240,30))
+        txtUUIDb5 = UITextField(frame: CGRect(x: 50, y: offset, width: 240,height: 30))
         txtUUIDb5.text = "XXXXXXXXXXXX"
         txtUUIDb5.delegate = self
         txtUUIDb5.tag = 5
-        txtUUIDb5.borderStyle = UITextBorderStyle.RoundedRect
-        txtUUIDb5.keyboardType = UIKeyboardType.ASCIICapable
+        txtUUIDb5.borderStyle = UITextBorderStyle.roundedRect
+        txtUUIDb5.keyboardType = UIKeyboardType.asciiCapable
         scrView.addSubview(txtUUIDb5)
         
         offset += lblDesc7.frame.size.height + 5.0
         
-        lblErrUUIDb5 = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErrUUIDb5 = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErrUUIDb5.text = "エラーメッセージ"
-        lblErrUUIDb5.textColor = UIColor.redColor()
-        lblErrUUIDb5.textAlignment = NSTextAlignment.Left
-        lblErrUUIDb5.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErrUUIDb5.textColor = UIColor.red
+        lblErrUUIDb5.textAlignment = NSTextAlignment.left
+        lblErrUUIDb5.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErrUUIDb5)
         
         offset += lblErrUUIDb5.frame.size.height + 15.0
 
-        let lblDesc8:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc8:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc8.text = "各フィールドには、0〜9,A,B,C,D,E,Fが使用できます。"
-        lblDesc8.textAlignment = NSTextAlignment.Left
-        lblDesc8.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc8.textAlignment = NSTextAlignment.left
+        lblDesc8.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc8.numberOfLines = 0
         lblDesc8.sizeToFit()
 
@@ -222,38 +222,38 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         
         offset += lblDesc8.frame.size.height + 15.0
         
-        btnSet = UIButton(frame: CGRectMake(20,offset,self.view.frame.size.width - 40,25.0))
-        btnSet.setTitle("設定", forState: .Normal)
-        btnSet.backgroundColor = UIColor.grayColor()
+        btnSet = UIButton(frame: CGRect(x: 20,y: offset,width: self.view.frame.size.width - 40,height: 25.0))
+        btnSet.setTitle("設定", for: UIControlState())
+        btnSet.backgroundColor = UIColor.gray
         btnSet.layer.masksToBounds = true
         btnSet.tag = 1
-        btnSet.addTarget(self, action: #selector(InputUUIDViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        btnSet.addTarget(self, action: #selector(InputUUIDViewController.onClickButton(_:)), for: .touchUpInside)
         scrView.addSubview(self.btnSet)
         
         offset += btnSet.frame.size.height + 15.0
         
         
-        let lblDesc9:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc9:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc9.text = "初期値に戻す場合は、以下のボタンをタップしてください。"
-        lblDesc9.textAlignment = NSTextAlignment.Left
-        lblDesc9.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc9.textAlignment = NSTextAlignment.left
+        lblDesc9.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc9.numberOfLines = 0
         lblDesc9.sizeToFit()
         scrView.addSubview(lblDesc9)
         
         offset += lblDesc8.frame.size.height + 15.0
         
-        btnReset = UIButton(frame: CGRectMake(20,offset,self.view.frame.size.width - 40,25.0))
-        btnReset.setTitle("初期値に戻す", forState: .Normal)
-        btnReset.backgroundColor = UIColor.grayColor()
+        btnReset = UIButton(frame: CGRect(x: 20,y: offset,width: self.view.frame.size.width - 40,height: 25.0))
+        btnReset.setTitle("初期値に戻す", for: UIControlState())
+        btnReset.backgroundColor = UIColor.gray
         btnReset.layer.masksToBounds = true
         btnReset.tag = 2
-        btnReset.addTarget(self, action: #selector(InputUUIDViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        btnReset.addTarget(self, action: #selector(InputUUIDViewController.onClickButton(_:)), for: .touchUpInside)
         scrView.addSubview(self.btnReset)
         
         offset += btnReset.frame.size.height + 15.0
         
-        scrView.contentSize = CGSizeMake(self.view.frame.width, offset + (self.view.frame.height / 2) )
+        scrView.contentSize = CGSize(width: self.view.frame.width, height: offset + (self.view.frame.height / 2) )
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(InputMajorViewController.tapGesture(_:)))
         self.scrView.addGestureRecognizer(tap)
@@ -262,17 +262,17 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         refresh()
     }
     
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(InputUUIDViewController.onOrientationChange(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(InputUUIDViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    @objc func onOrientationChange(_ notification: Notification){
         
     }
     
@@ -284,7 +284,7 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
     /*
      タップイベント.
      */
-    internal func tapGesture(sender: UITapGestureRecognizer){
+    internal func tapGesture(_ sender: UITapGestureRecognizer){
         self.view.endEditing(true)
     }
 
@@ -297,15 +297,15 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         lblErrUUIDb4.text = ""
         lblErrUUIDb5.text = ""
         
-        lblFullUUID.text = self.scan_uuid.UUIDString
+        lblFullUUID.text = self.scan_uuid.uuidString
         
-        let wkStr:NSString = self.scan_uuid.UUIDString as NSString
+        let wkStr:NSString = self.scan_uuid.uuidString as NSString
 
-        let UUID_b1 = wkStr.substringWithRange(NSRange(location: 0, length: 8))
-        let UUID_b2 = wkStr.substringWithRange(NSRange(location: 9, length: 4))
-        let UUID_b3 = wkStr.substringWithRange(NSRange(location: 14, length: 4))
-        let UUID_b4 = wkStr.substringWithRange(NSRange(location: 19, length: 4))
-        let UUID_b5 = wkStr.substringWithRange(NSRange(location: 24, length: 12))
+        let UUID_b1 = wkStr.substring(with: NSRange(location: 0, length: 8))
+        let UUID_b2 = wkStr.substring(with: NSRange(location: 9, length: 4))
+        let UUID_b3 = wkStr.substring(with: NSRange(location: 14, length: 4))
+        let UUID_b4 = wkStr.substring(with: NSRange(location: 19, length: 4))
+        let UUID_b5 = wkStr.substring(with: NSRange(location: 24, length: 12))
         
         txtUUIDb1.text = UUID_b1
         txtUUIDb2.text = UUID_b2
@@ -319,14 +319,14 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
     /*
     ボタンイベント
     */
-    internal func onClickButton(sender: UIButton){
+    @objc internal func onClickButton(_ sender: UIButton){
 
         
         if( sender.tag == 1 ) {
             
-            checkField()
+            // checkField()
             
-            if( self.uuid_valid == false ) {
+            if( checkField() == false ) {
                 showAlert("入力値にエラーがあります。")
                 return
             }
@@ -335,9 +335,9 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
             let b3:NSString = txtUUIDb3.text! as NSString
             let b4:NSString = txtUUIDb4.text! as NSString
             let b5:NSString = txtUUIDb5.text! as NSString
-            let wkStr = b1.uppercaseString + "-" + b2.uppercaseString + "-" + b3.uppercaseString + "-" + b4.uppercaseString + "-" + b5.uppercaseString
+            let wkStr = b1.uppercased + "-" + b2.uppercased + "-" + b3.uppercased + "-" + b4.uppercased + "-" + b5.uppercased
             
-            let wkUUID = NSUUID(UUIDString: wkStr)
+            let wkUUID = UUID(uuidString: wkStr)
             
             self.scan_uuid = wkUUID
             appDelegate.scan_uuid = wkUUID
@@ -365,14 +365,14 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
     /*
     UITextFieldが編集された直後に呼ばれるデリゲートメソッド.
     */
-    func textFieldDidBeginEditing(textField: UITextField){
+    func textFieldDidBeginEditing(_ textField: UITextField){
         print("textFieldDidBeginEditing:" + textField.text!)
     }
     
     /*
     UITextFieldが編集終了する直前に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         print("textFieldShouldEndEditing:" + textField.text!)
         
         self.uuid_valid = false
@@ -524,24 +524,24 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
     /*
     改行ボタンが押された際に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         return true
     }
     
-    func isValidUUID(str: String) -> Bool {
+    func isValidUUID(_ str: String) -> Bool {
         let pattern = "^[a-fA-F0-9]+$"
         let ret = Regexp(pattern).isMatch(str)
         return ret
     }
     
-    func showAlert( msg:String ) {
+    func showAlert( _ msg:String ) {
         // UIAlertControllerを作成する.
-        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .Alert)
+        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .alert)
         
         // OKのアクションを作成する.
-        let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+        let myOkAction = UIAlertAction(title: "OK", style: .default) { action in
             print("Action OK!!")
         }
         
@@ -549,7 +549,7 @@ class InputUUIDViewController: UIViewController,UITextFieldDelegate {
         myAlert.addAction(myOkAction)
         
         // UIAlertを発動する.
-        presentViewController(myAlert, animated: true, completion: nil)
+        present(myAlert, animated: true, completion: nil)
         
     }
     

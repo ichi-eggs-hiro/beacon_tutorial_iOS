@@ -17,10 +17,10 @@ class Logs {
         arLog = NSMutableArray()
     }
     
-    func Add( uuid:NSUUID, major:NSNumber, minor:NSNumber, lat:CLLocationDegrees, lon:CLLocationDegrees, d:NSDate ) {
+    func Add( _ uuid:UUID, major:NSNumber, minor:NSNumber, lat:CLLocationDegrees, lon:CLLocationDegrees, d:Date ) {
 
         let l : log = log(uuid: uuid, major: major, minor: minor, lat: lat, lon: lon, dt: d)
-        arLog.addObject(l)
+        arLog.add(l)
     }
     
     func CreateCSV() -> String {
@@ -30,25 +30,25 @@ class Logs {
         
         var strCSV : String = ""
         
-        let RFC3339DateFormatter = NSDateFormatter()
-        RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let RFC3339DateFormatter = DateFormatter()
+        RFC3339DateFormatter.locale = Locale(identifier: "en_US_POSIX")
         RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+        RFC3339DateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US") // ロケールの設定
-        dateFormatter.timeStyle = .LongStyle
-        dateFormatter.dateStyle = .LongStyle
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US") // ロケールの設定
+        dateFormatter.timeStyle = .long
+        dateFormatter.dateStyle = .long
         
         
         for i in 0  ..< arLog.count  {
             let l = arLog[i] as! log
             
-            let dt : String = RFC3339DateFormatter.stringFromDate(l.date)
+            let dt : String = RFC3339DateFormatter.string(from: l.date as Date)
             
             strCSV += dt
             strCSV += ","
-            strCSV += l.UUID.UUIDString
+            strCSV += l.UUID.uuidString
             strCSV += ","
             strCSV += l.major.stringValue
             strCSV += ","

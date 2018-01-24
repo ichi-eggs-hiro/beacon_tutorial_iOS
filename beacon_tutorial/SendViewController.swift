@@ -32,7 +32,7 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
     
     // BeaconのIdentifierを設定.
     let identifierStr:NSString = "TownBeacon"
-    var uuid:NSUUID? = NSUUID(UUIDString: "48534442-4C45-4144-80C0-1800FFFFFFFF")
+    var uuid:UUID? = UUID(uuidString: "48534442-4C45-4144-80C0-1800FFFFFFFF")
     
     // MajorId,MinorId
     var major:CLBeaconMajorValue = 100
@@ -54,30 +54,30 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
         self.imgSending = UIImage(named: "sending.png")
         
         // App Delegate を取得
-        let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
         // Beacon に関する初期化
-        self.uuid = appDelegate.scan_uuid!
+        self.uuid = appDelegate.scan_uuid! as UUID
 
         
         var offset : CGFloat = (self.view.frame.height - self.imgNoSend.size.height) / 2
         let btnX = (self.view.frame.width - self.imgNoSend.size.width) / 2
         
-        self.btnSend = UIButton(frame: CGRectMake(btnX,offset,self.imgNoSend.size.width,self.imgNoSend.size.height))
-        self.btnSend.setImage(self.imgNoSend, forState: UIControlState.Normal)
+        self.btnSend = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgNoSend.size.width,height: self.imgNoSend.size.height))
+        self.btnSend.setImage(self.imgNoSend, for: UIControlState())
         self.btnSend.tag = 1
-        self.btnSend.addTarget(self, action: #selector(SendViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnSend.addTarget(self, action: #selector(SendViewController.onClickButton(_:)), for: .touchUpInside)
         self.view.addSubview(self.btnSend)
         
         offset += self.imgNoSend.size.height + 10.0
 
         
         self.lblUUID = UILabel()
-        self.lblUUID.frame = CGRectMake(10.0, offset, self.view.frame.width, 20.0 )
-        self.lblUUID.text = "UUID : \(self.uuid!.UUIDString)"
-        self.lblUUID.textAlignment = NSTextAlignment.Left
-        self.lblUUID.font = UIFont.systemFontOfSize(14)
-        self.lblUUID.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblUUID.frame = CGRect(x: 10.0, y: offset, width: self.view.frame.width, height: 20.0 )
+        self.lblUUID.text = "UUID : \(self.uuid!.uuidString)"
+        self.lblUUID.textAlignment = NSTextAlignment.left
+        self.lblUUID.font = UIFont.systemFont(ofSize: 14)
+        self.lblUUID.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblUUID.numberOfLines = 0
         self.lblUUID.sizeToFit()
         self.view.addSubview(self.lblUUID)
@@ -85,10 +85,10 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
         offset += self.lblUUID.frame.size.height
 
         self.lblMajor = UILabel()
-        self.lblMajor.frame = CGRectMake(10.0, offset, self.view.frame.width, 20.0 )
+        self.lblMajor.frame = CGRect(x: 10.0, y: offset, width: self.view.frame.width, height: 20.0 )
         self.lblMajor.text = "Major : \(self.major)"
-        self.lblMajor.textAlignment = NSTextAlignment.Left
-        self.lblMajor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblMajor.textAlignment = NSTextAlignment.left
+        self.lblMajor.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblMajor.numberOfLines = 0
         self.lblMajor.sizeToFit()
         self.view.addSubview(self.lblMajor)
@@ -96,10 +96,10 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
         offset += self.lblMajor.frame.size.height
 
         self.lblMinor = UILabel()
-        self.lblMinor.frame = CGRectMake(10.0, offset, self.view.frame.width, 20.0 )
+        self.lblMinor.frame = CGRect(x: 10.0, y: offset, width: self.view.frame.width, height: 20.0 )
         self.lblMinor.text = "Major : \(self.minor)"
-        self.lblMinor.textAlignment = NSTextAlignment.Left
-        self.lblMinor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblMinor.textAlignment = NSTextAlignment.left
+        self.lblMinor.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblMinor.numberOfLines = 0
         self.lblMinor.sizeToFit()
         self.view.addSubview(self.lblMinor)
@@ -112,17 +112,17 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
 
     }
     
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SendViewController.onOrientationChange(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SendViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     // 画面遷移等で非表示になる時
-    override func viewWillDisappear( animated: Bool ) {
+    override func viewWillDisappear( _ animated: Bool ) {
         super.viewDidDisappear( animated )
         
         if( self.status == true ) {
@@ -131,7 +131,7 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    @objc func onOrientationChange(_ notification: Notification){
         
     }
     
@@ -143,19 +143,19 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
     /*
     ボタンイベント
     */
-    internal func onClickButton(sender: UIButton){
+    @objc internal func onClickButton(_ sender: UIButton){
         
         if( sender.tag == 1 ) {
             
             if( self.status == false ) {
                 // 送信開始
                 self.status = true
-                self.btnSend.setImage(self.imgSending, forState: UIControlState.Normal)
+                self.btnSend.setImage(self.imgSending, for: UIControlState())
                 start_sending()
             } else {
                 // 送信終了
                 self.status = false
-                self.btnSend.setImage(self.imgNoSend, forState: UIControlState.Normal)
+                self.btnSend.setImage(self.imgNoSend, for: UIControlState())
                 stop_sending()
             }
             
@@ -173,9 +173,9 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
         let beaconRegion = CLBeaconRegion(proximityUUID: uuid!, major: major, minor: minor, identifier: identifier)
         
         // Advertisingのフォーマットを作成.
-        let beaconPeripheralData = NSDictionary(dictionary: beaconRegion.peripheralDataWithMeasuredPower(nil))
+        let beaconPeripheralData = NSDictionary(dictionary: beaconRegion.peripheralData(withMeasuredPower: nil))
         
-        print(beaconRegion.peripheralDataWithMeasuredPower(nil))
+        print(beaconRegion.peripheralData(withMeasuredPower: nil))
         print(beaconPeripheralData.description)
         
         // Advertisingを発信.
@@ -190,11 +190,11 @@ class SendViewController: UIViewController, CBPeripheralManagerDelegate {
     }
     
     
-    func peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
+    func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         print("peripheralManagerDidUpdateState")
     }
     
-    func peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
+    func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         print("peripheralManagerDidStartAdvertising")
     }
 

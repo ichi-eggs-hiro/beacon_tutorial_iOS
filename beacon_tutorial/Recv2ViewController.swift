@@ -17,7 +17,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     // CoreLocation
     var locationManager:CLLocationManager!
     var beaconRegion:CLBeaconRegion!
-    var uuid : NSUUID!
+    var uuid : UUID!
     var major :NSNumber = -1
     var minor :NSNumber = -1
     
@@ -35,10 +35,10 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
         super.viewDidLoad()
         
         // App Delegate を取得
-        let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
         // Beacon に関する初期化
-        self.uuid = appDelegate.scan_uuid!
+        self.uuid = appDelegate.scan_uuid! as UUID!
         self.major = appDelegate.scan_major
         self.minor = appDelegate.scan_minor
         
@@ -56,13 +56,13 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
         self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, identifier:identifierStr as String)
         
         if( self.major != -1 && self.minor == -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, major: majorVal, identifier: identifierStr as String)
         }
         
         if( self.major != -1 && self.minor != -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
-            let minorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
+            let minorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: majorVal, minor: minorVal, identifier: identifierStr as String)
         }
         
@@ -80,13 +80,13 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
         
         
         // iOS8 以降の　使用許可取得処理
-        if( UIDevice.currentDevice().systemVersion.hasPrefix("8") ) {
+        if( UIDevice.current.systemVersion.hasPrefix("8") ) {
             
             // セキュリティ認証のステータスを取得
             let status = CLLocationManager.authorizationStatus()
             
             // まだ認証が得られていない場合は、認証ダイアログを表示
-            if(status == CLAuthorizationStatus.NotDetermined) {
+            if(status == CLAuthorizationStatus.notDetermined) {
                 
                 self.locationManager.requestAlwaysAuthorization()
                 
@@ -109,7 +109,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
         
         // 画面の初期化
         self.title = "ビーコン距離測定"
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         //        let statusBarHeight: CGFloat = UIApplication.sharedApplication().statusBarFrame.height
         //        let navBarHeight = self.navigationController?.navigationBar.frame.size.height
@@ -119,7 +119,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
         tblView = UITableView(frame: self.view.frame )
         
         // Cell名の登録をおこなう.
-        tblView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
+        tblView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
         
         // DataSourceの設定をする.
         tblView.dataSource = self
@@ -135,25 +135,25 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     
     
     // 画面が再表示される時
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
         
         super.viewWillAppear( animated )
         
         if( self.isBeaconRanging == false ) {
             // Beacon の監視を再開する。
-            self.locationManager.startRangingBeaconsInRegion(self.beaconRegion);
+            self.locationManager.startRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = true;
             print("restart monitoring Beacons")
         }
     }
     
     // 画面遷移等で非表示になる時
-    override func viewWillDisappear( animated: Bool ) {
+    override func viewWillDisappear( _ animated: Bool ) {
         super.viewDidDisappear( animated )
         
         if( self.isBeaconRanging == true ) {
             // Beacon の監視を停止する
-            self.locationManager.stopRangingBeaconsInRegion(self.beaconRegion);
+            self.locationManager.stopRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = false;
             print("stop monitoring Beacons")
         }
@@ -178,14 +178,14 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     セクションの数を返す.
     */
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     /*
     セクションのタイトルを返す.
     */
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         return "\(self.msgInOut) + \(self.msgStatus) "
     }
@@ -193,44 +193,44 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     テーブルに表示する配列の総数を返す.
     */
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.beaconLists.count
     }
     
     /*
     Cellに値を設定する.
     */
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         //        let cell = tableView.dequeueReusableCellWithIdentifier("MyCell", forIndexPath: indexPath) as UITableViewCell
-        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
+        let cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "Cell")
         
         let beacon : CLBeacon = self.beaconLists[indexPath.row] as! CLBeacon
         
-        let major = beacon.major.integerValue
-        let minor = beacon.minor.integerValue
+        let major = beacon.major.intValue
+        let minor = beacon.minor.intValue
         let accuracy = beacon.accuracy
         let rssi = beacon.rssi
         
         var proximity = ""
         
         switch (beacon.proximity) {
-        case CLProximity.Unknown:
+        case CLProximity.unknown:
             print("Proximity: Unknown");
             proximity = "Unknown"
             break;
             
-        case CLProximity.Far:
+        case CLProximity.far:
             print("Proximity: Far");
             proximity = "Far"
             break;
             
-        case CLProximity.Near:
+        case CLProximity.near:
             print("Proximity: Near");
             proximity = "Near"
             break;
             
-        case CLProximity.Immediate:
+        case CLProximity.immediate:
             print("Proximity: Immediate");
             proximity = "Immediate"
             break;
@@ -244,7 +244,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     
     
     // 位置情報取得に成功したときに呼び出されるデリゲート.
-    func locationManager(manager: CLLocationManager,didUpdateLocations locations: [CLLocation]){
+    func locationManager(_ manager: CLLocationManager,didUpdateLocations locations: [CLLocation]){
         
         let lat = manager.location!.coordinate.latitude
         let lon = manager.location!.coordinate.longitude
@@ -254,7 +254,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     }
     
     // 位置情報取得に失敗した時に呼び出されるデリゲート.
-    func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
+    func locationManager(_ manager: CLLocationManager,didFailWithError error: Error){
         print("locationManager error", terminator: "")
     }
     
@@ -262,29 +262,29 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     (Delegate) 認証のステータスがかわったら呼び出される.
     */
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         
         print("didChangeAuthorizationStatus");
         
         // 認証のステータスをログで表示
         var statusStr = "";
         switch (status) {
-        case .NotDetermined:
+        case .notDetermined:
             statusStr = "NotDetermined"
-            if manager.respondsToSelector(#selector(CLLocationManager.requestAlwaysAuthorization)) {
+            if manager.responds(to: #selector(CLLocationManager.requestAlwaysAuthorization)) {
                 manager.requestAlwaysAuthorization()
             }
             
-        case .Restricted:
+        case .restricted:
             statusStr = "Restricted"
-        case .Denied:
+        case .denied:
             statusStr = "Denied"
-        case .AuthorizedAlways:
+        case .authorizedAlways:
             statusStr = "AuthorizedAlways"
             // 監視を開始する
-            manager.startMonitoringForRegion(self.beaconRegion);
+            manager.startMonitoring(for: self.beaconRegion);
             
-        case .AuthorizedWhenInUse:
+        case .authorizedWhenInUse:
             statusStr = "AuthorizedWhenInUse"
         }
         print(" CLAuthorizationStatus: \(statusStr)")
@@ -294,36 +294,36 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     STEP2(Delegate): LocationManagerがモニタリングを開始したというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didStartMonitoringForRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
         
         print("didStartMonitoringForRegion");
         
         // STEP3: この時点でビーコンがすでにRegion内に入っている可能性があるので、その問い合わせを行う
         // (Delegate didDetermineStateが呼ばれる: STEP4)
-        manager.requestStateForRegion(self.beaconRegion);
+        manager.requestState(for: self.beaconRegion);
     }
     
     /*
     STEP4(Delegate): 現在リージョン内にいるかどうかの通知を受け取る.
     */
-    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion inRegion: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for inRegion: CLRegion) {
         
         print("locationManager: didDetermineState \(state)")
         
         switch (state) {
             
-        case .Inside: // リージョン内にいる
+        case .inside: // リージョン内にいる
             print("CLRegionStateInside:");
             
             // STEP5: すでに入っている場合は、そのままRangingをスタートさせる
             // (Delegate didRangeBeacons: STEP6)
-            manager.startRangingBeaconsInRegion(self.beaconRegion);
+            manager.startRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = true
             
             self.msgStatus = "Inside"
             break;
             
-        case .Outside:
+        case .outside:
             print("CLRegionStateOutside:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
             
@@ -331,7 +331,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
             
             break;
             
-        case .Unknown:
+        case .unknown:
             print("CLRegionStateUnknown:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
             
@@ -345,7 +345,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     STEP6(Delegate): ビーコンがリージョン内に入り、その中のビーコンをNSArrayで渡される.
     */
-    func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
+    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         
         // 配列をリセット
         beaconLists = NSMutableArray()
@@ -359,7 +359,7 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
                 
                 let beacon = beacons[i]
                 
-                self.beaconLists.addObject(beacon)
+                self.beaconLists.add(beacon)
             }
         }
         self.tblView.reloadData()
@@ -369,11 +369,11 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     (Delegate) リージョン内に入ったというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("didEnterRegion");
         
         // Rangingを始める
-        manager.startRangingBeaconsInRegion(self.beaconRegion);
+        manager.startRangingBeacons(in: self.beaconRegion);
         self.isBeaconRanging = true
         
         self.msgInOut = "Enter Region"
@@ -384,11 +384,11 @@ class Recv2ViewController: UIViewController,CLLocationManagerDelegate,UITableVie
     /*
     (Delegate) リージョンから出たというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         NSLog("didExitRegion");
         
         // Rangingを停止する
-        manager.stopRangingBeaconsInRegion(self.beaconRegion);
+        manager.stopRangingBeacons(in: self.beaconRegion);
         self.isBeaconRanging = false;
         
         self.msgInOut = "Exit Region"

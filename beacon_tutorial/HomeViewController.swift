@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
         self.title = "Beacon入門"
         
         // Viewの背景色を薄いグレー(#E6E6E6) に設定する。
-        self.scrView = UIScrollView(frame: CGRectMake(0,0,self.view.frame.width, self.view.frame.height) )
+        self.scrView = UIScrollView(frame: CGRect(x: 0,y: 0,width: self.view.frame.width, height: self.view.frame.height) )
         self.scrView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
         self.view.addSubview(self.scrView)
         
@@ -60,7 +60,7 @@ class HomeViewController: UIViewController {
         var offset : CGFloat = 0.0
         let logoX = (self.view.frame.width - self.imgLogo.size.width) / 2
 
-        self.imgViewLogo = UIImageView(frame: CGRectMake(logoX, offset, self.imgLogo.size.width, self.imgLogo.size.height))
+        self.imgViewLogo = UIImageView(frame: CGRect(x: logoX, y: offset, width: self.imgLogo.size.width, height: self.imgLogo.size.height))
         self.imgViewLogo.image = self.imgLogo
         self.imgViewLogo.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
 
@@ -69,77 +69,77 @@ class HomeViewController: UIViewController {
         offset += self.imgLogo.size.height + 10.0
         let btnX = (self.view.frame.width - self.imgBtnSetting.size.width) / 2
         
-        self.btnSetting = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnSetting.size.width,self.imgBtnSetting.size.height))
-        self.btnSetting.setImage(self.imgBtnSetting, forState: UIControlState.Normal)
+        self.btnSetting = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnSetting.size.width,height: self.imgBtnSetting.size.height))
+        self.btnSetting.setImage(self.imgBtnSetting, for: UIControlState())
         self.btnSetting.tag = 1
-        self.btnSetting.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnSetting.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnSetting)
 
         offset += self.imgBtnSetting.size.height + 10.0
         
-        self.btnRecv1 = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnRecv1.size.width,self.imgBtnRecv1.size.height))
-        self.btnRecv1.setImage(self.imgBtnRecv1, forState: UIControlState.Normal)
+        self.btnRecv1 = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnRecv1.size.width,height: self.imgBtnRecv1.size.height))
+        self.btnRecv1.setImage(self.imgBtnRecv1, for: UIControlState())
         self.btnRecv1.tag = 3
-        self.btnRecv1.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnRecv1.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnRecv1)
 
         offset += self.imgBtnRecv1.size.height + 10.0
         
-        self.btnRecv2 = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnRecv2.size.width,self.imgBtnRecv2.size.height))
-        self.btnRecv2.setImage(self.imgBtnRecv2, forState: UIControlState.Normal)
+        self.btnRecv2 = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnRecv2.size.width,height: self.imgBtnRecv2.size.height))
+        self.btnRecv2.setImage(self.imgBtnRecv2, for: UIControlState())
         self.btnRecv2.tag = 4
-        self.btnRecv2.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnRecv2.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnRecv2)
 
         offset += self.imgBtnRecv2.size.height + 10.0
         
-        self.btnRecv3 = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnRecv3.size.width,self.imgBtnRecv3.size.height))
-        self.btnRecv3.setImage(self.imgBtnRecv3, forState: UIControlState.Normal)
+        self.btnRecv3 = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnRecv3.size.width,height: self.imgBtnRecv3.size.height))
+        self.btnRecv3.setImage(self.imgBtnRecv3, for: UIControlState())
         self.btnRecv3.tag = 5
-        self.btnRecv3.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnRecv3.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnRecv3)
         
         offset += self.imgBtnRecv3.size.height + 10.0
         
-        self.btnCheckLog = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnCheckLog.size.width,self.imgBtnCheckLog.size.height))
-        self.btnCheckLog.setImage(self.imgBtnCheckLog, forState: UIControlState.Normal)
+        self.btnCheckLog = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnCheckLog.size.width,height: self.imgBtnCheckLog.size.height))
+        self.btnCheckLog.setImage(self.imgBtnCheckLog, for: UIControlState())
         self.btnCheckLog.tag = 6
-        self.btnCheckLog.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnCheckLog.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnCheckLog)
         
         offset += self.imgBtnCheckLog.size.height + 10.0
         
-        self.btnSend = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnSend.size.width,self.imgBtnSend.size.height))
-        self.btnSend.setImage(self.imgBtnSend, forState: UIControlState.Normal)
+        self.btnSend = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnSend.size.width,height: self.imgBtnSend.size.height))
+        self.btnSend.setImage(self.imgBtnSend, for: UIControlState())
         self.btnSend.tag = 2
-        self.btnSend.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnSend.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnSend)
         
         offset += self.imgBtnSend.size.height + 10.0
 
         
-        self.btnAbout = UIButton(frame: CGRectMake(btnX,offset,self.imgBtnAbout.size.width,self.imgBtnAbout.size.height))
-        self.btnAbout.setImage(self.imgBtnAbout, forState: UIControlState.Normal)
+        self.btnAbout = UIButton(frame: CGRect(x: btnX,y: offset,width: self.imgBtnAbout.size.width,height: self.imgBtnAbout.size.height))
+        self.btnAbout.setImage(self.imgBtnAbout, for: UIControlState())
         self.btnAbout.tag = 7
-        self.btnAbout.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        self.btnAbout.addTarget(self, action: #selector(HomeViewController.onClickButton(_:)), for: .touchUpInside)
         self.scrView.addSubview(self.btnAbout)
 
         offset += self.imgBtnAbout.size.height + 10.0
 
-        self.scrView.contentSize = CGSizeMake(self.view.frame.width, offset )
+        self.scrView.contentSize = CGSize(width: self.view.frame.width, height: offset )
     }
     
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.onOrientationChange(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    @objc func onOrientationChange(_ notification: Notification){
         
     }
     
@@ -151,7 +151,7 @@ class HomeViewController: UIViewController {
     /*
     ボタンイベント
     */
-    internal func onClickButton(sender: UIButton){
+    @objc internal func onClickButton(_ sender: UIButton){
         
         if( sender.tag == 1 ) {
             // 移動先のViewを定義する.

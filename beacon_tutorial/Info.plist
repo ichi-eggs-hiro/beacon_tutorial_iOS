@@ -24,7 +24,11 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>use for iBeacon &amp; Maps</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>use for iBeacon &amp; Maps</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>use for iBeacon &amp; Maps</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

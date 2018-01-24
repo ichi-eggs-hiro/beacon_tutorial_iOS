@@ -16,7 +16,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     // MapView.
     var mapView : MKMapView!
     var targetPin: MKPointAnnotation? = nil
-    var timerObj : NSTimer!
+    var timerObj : Timer!
     
     var lat : CLLocationDegrees!
     var lon : CLLocationDegrees!
@@ -24,7 +24,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     // CoreLocation
     var locationManager:CLLocationManager!
     var beaconRegion:CLBeaconRegion!
-    var uuid : NSUUID!
+    var uuid : UUID!
     var major : NSNumber = -1
     var minor : NSNumber = -1
     
@@ -49,13 +49,13 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         locationManager.delegate = self         // デリゲートを自身に設定.
         
         // iOS8 以降の　使用許可取得処理
-        if( UIDevice.currentDevice().systemVersion.hasPrefix("8") ) {
+        if( UIDevice.current.systemVersion.hasPrefix("8") ) {
             
             // セキュリティ認証のステータスを取得
             let status = CLLocationManager.authorizationStatus()
             
             // まだ認証が得られていない場合は、認証ダイアログを表示
-            if(status == CLAuthorizationStatus.NotDetermined) {
+            if(status == CLAuthorizationStatus.notDetermined) {
                 
                 self.locationManager.requestAlwaysAuthorization()
                 
@@ -64,10 +64,10 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         
         
         // App Delegate を取得
-        let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
         // Beacon に関する初期化
-        self.uuid = appDelegate.scan_uuid!
+        self.uuid = appDelegate.scan_uuid! as UUID!
         self.major = appDelegate.scan_major
         self.minor = appDelegate.scan_minor
         
@@ -91,13 +91,13 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, identifier:identifierStr as String)
         
         if( self.major != -1 && self.minor == -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID:uuid, major: majorVal, identifier: identifierStr as String)
         }
         
         if( self.major != -1 && self.minor != -1 ) {
-            let majorVal:UInt16 = numericCast(self.major.integerValue)
-            let minorVal:UInt16 = numericCast(self.major.integerValue)
+            let majorVal:UInt16 = numericCast(self.major.intValue)
+            let minorVal:UInt16 = numericCast(self.major.intValue)
             self.beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: majorVal, minor: minorVal, identifier: identifierStr as String)
         }
         // ディスプレイがOffでもイベントが通知されるように設定(trueにするとディスプレイがOnの時だけ反応).
@@ -151,28 +151,28 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         // メッセージラベル
         let msgPosy : CGFloat = self.view.frame.height - 60
         self.lblMsg1 = UILabel()
-        self.lblMsg1.frame = CGRectMake(10.0, msgPosy, self.view.frame.width - 20, 20.0 )
+        self.lblMsg1.frame = CGRect(x: 10.0, y: msgPosy, width: self.view.frame.width - 20, height: 20.0 )
         self.lblMsg1.text = ""
-        self.lblMsg1.textAlignment = NSTextAlignment.Left
-        self.lblMsg1.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblMsg1.textAlignment = NSTextAlignment.left
+        self.lblMsg1.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblMsg1.numberOfLines = 1
         self.lblMsg1.backgroundColor = UIColor(red: 230, green: 230, blue: 230, alpha: 1)
         self.view.addSubview(self.lblMsg1)
 
         self.lblMsg2 = UILabel()
-        self.lblMsg2.frame = CGRectMake(10.0, msgPosy + 20.0, self.view.frame.width - 20, 20.0 )
+        self.lblMsg2.frame = CGRect(x: 10.0, y: msgPosy + 20.0, width: self.view.frame.width - 20, height: 20.0 )
         self.lblMsg2.text = ""
-        self.lblMsg2.textAlignment = NSTextAlignment.Left
-        self.lblMsg2.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblMsg2.textAlignment = NSTextAlignment.left
+        self.lblMsg2.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblMsg2.numberOfLines = 1
         self.lblMsg2.backgroundColor = UIColor(red: 230, green: 230, blue: 230, alpha: 1)
         self.view.addSubview(self.lblMsg2)
 
         self.lblMsg3 = UILabel()
-        self.lblMsg3.frame = CGRectMake(10.0, msgPosy + 40.0, self.view.frame.width - 20, 20.0 )
+        self.lblMsg3.frame = CGRect(x: 10.0, y: msgPosy + 40.0, width: self.view.frame.width - 20, height: 20.0 )
         self.lblMsg3.text = ""
-        self.lblMsg3.textAlignment = NSTextAlignment.Left
-        self.lblMsg3.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        self.lblMsg3.textAlignment = NSTextAlignment.left
+        self.lblMsg3.lineBreakMode = NSLineBreakMode.byWordWrapping
         self.lblMsg3.numberOfLines = 1
         self.lblMsg3.backgroundColor = UIColor(red: 230, green: 230, blue: 230, alpha: 1)
         self.view.addSubview(self.lblMsg3)
@@ -185,36 +185,36 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     }
     
     // Regionが変更された時に呼び出されるメソッド.
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         print("regionDidChangeAnimated")
     }
     
     // 画面が再表示される時
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
         
         super.viewWillAppear( animated )
         
         if( self.isBeaconRanging == false ) {
             // Beacon の監視を再開する。
-            self.locationManager.startRangingBeaconsInRegion(self.beaconRegion);
+            self.locationManager.startRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = true;
             print("restart monitoring Beacons")
         }
     }
     
     // 画面遷移等で非表示になる時
-    override func viewWillDisappear( animated: Bool ) {
+    override func viewWillDisappear( _ animated: Bool ) {
         super.viewDidDisappear( animated )
         
         if( self.isBeaconRanging == true ) {
             // Beacon の監視を停止する
-            self.locationManager.stopRangingBeaconsInRegion(self.beaconRegion);
+            self.locationManager.stopRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = false;
             print("stop monitoring Beacons")
         }
     }
     
-    func setCenter( msg : String ) {
+    func setCenter( _ msg : String ) {
         let centerLat: CLLocationDegrees = self.lat
         let centerLon: CLLocationDegrees = self.lon
         let centerCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(centerLat, centerLon)
@@ -233,11 +233,11 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         // pin を表示する
         //
         
-        let now = NSDate() // 現在日時の取得
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "ja_JP") // ロケールの設定
-        dateFormatter.timeStyle = .MediumStyle
-        dateFormatter.dateStyle = .MediumStyle
+        let now = Date() // 現在日時の取得
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ja_JP") // ロケールの設定
+        dateFormatter.timeStyle = .medium
+        dateFormatter.dateStyle = .medium
         
         
         let pin = MKPointAnnotation()
@@ -247,27 +247,27 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         pin.coordinate = center
         
         // タイトルを設定.
-        pin.title = dateFormatter.stringFromDate(now)       // -> YYYY/MM/DD HH:MM:SS
+        pin.title = dateFormatter.string(from: now)       // -> YYYY/MM/DD HH:MM:SS
         pin.subtitle = msg
         
         // MapViewにピンを追加.
         mapView.addAnnotation(pin)
     }
     
-    func updateMessage( msg : String ) {
+    func updateMessage( _ msg : String ) {
         self.lblMsg1.text = msg
     }
 
-    func updateBeacon( msg : String ) {
+    func updateBeacon( _ msg : String ) {
         self.lblMsg2.text = msg
     }
 
-    func updateLocation( msg : String ) {
+    func updateLocation( _ msg : String ) {
         self.lblMsg3.text = msg
     }
     
     // 位置情報取得に成功したときに呼び出されるデリゲート.
-    func locationManager(manager: CLLocationManager,didUpdateLocations locations: [CLLocation]){
+    func locationManager(_ manager: CLLocationManager,didUpdateLocations locations: [CLLocation]){
         
         self.lat = manager.location!.coordinate.latitude
         self.lon = manager.location!.coordinate.longitude
@@ -278,73 +278,73 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     }
     
     // 位置情報取得に失敗した時に呼び出されるデリゲート.
-    func locationManager(manager: CLLocationManager,didFailWithError error: NSError){
+    func locationManager(_ manager: CLLocationManager,didFailWithError error: Error){
         print("locationManager error", terminator: "")
     }
     
     /*
     (Delegate) 認証のステータスがかわったら呼び出される.
     */
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         
         print("didChangeAuthorizationStatus");
         
         // 認証のステータスをログで表示
         var statusStr = "";
         switch (status) {
-        case .NotDetermined:
+        case .notDetermined:
             statusStr = "NotDetermined"
-            if manager.respondsToSelector(#selector(CLLocationManager.requestAlwaysAuthorization)) {
+            if manager.responds(to: #selector(CLLocationManager.requestAlwaysAuthorization)) {
                 manager.requestAlwaysAuthorization()
             }
             
-        case .Restricted:
+        case .restricted:
             statusStr = "Restricted"
-        case .Denied:
+        case .denied:
             statusStr = "Denied"
-        case .AuthorizedAlways:
+        case .authorizedAlways:
             statusStr = "AuthorizedAlways"
-        case .AuthorizedWhenInUse:
+        case .authorizedWhenInUse:
             statusStr = "AuthorizedWhenInUse"
         }
         print(" CLAuthorizationStatus: \(statusStr)")
         
-        manager.startMonitoringForRegion(self.beaconRegion);
+        manager.startMonitoring(for: self.beaconRegion);
     }
     
     /*
     STEP2(Delegate): LocationManagerがモニタリングを開始したというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didStartMonitoringForRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
         
         print("didStartMonitoringForRegion");
         
         // STEP3: この時点でビーコンがすでにRegion内に入っている可能性があるので、その問い合わせを行う
         // (Delegate didDetermineStateが呼ばれる: STEP4)
-        manager.requestStateForRegion(self.beaconRegion);
+        manager.requestState(for: self.beaconRegion);
     }
     
     /*
     STEP4(Delegate): 現在リージョン内にいるかどうかの通知を受け取る.
     */
-    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion inRegion: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for inRegion: CLRegion) {
         
         print("locationManager: didDetermineState \(state)")
         
         switch (state) {
             
-        case .Inside: // リージョン内にいる
+        case .inside: // リージョン内にいる
             print("CLRegionStateInside:");
             
             // STEP5: すでに入っている場合は、そのままRangingをスタートさせる
             // (Delegate didRangeBeacons: STEP6)
-            manager.startRangingBeaconsInRegion(self.beaconRegion);
+            manager.startRangingBeacons(in: self.beaconRegion);
             self.isBeaconRanging = true
             
             updateMessage("ビーコンを検出しました。")
             break;
             
-        case .Outside:
+        case .outside:
             print("CLRegionStateOutside:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
             
@@ -352,7 +352,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
             
             break;
             
-        case .Unknown:
+        case .unknown:
             print("CLRegionStateUnknown:");
             // 外にいる、またはUknownの場合はdidEnterRegionが適切な範囲内に入った時に呼ばれるため処理なし。
             
@@ -364,7 +364,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     /*
     STEP6(Delegate): ビーコンがリージョン内に入り、その中のビーコンをNSArrayで渡される.
     */
-    func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
+    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         
         // 配列をリセット
         beaconLists = NSMutableArray()
@@ -379,7 +379,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
                 
                 let beacon = beacons[i]
                 
-                self.beaconLists.addObject(beacon)
+                self.beaconLists.add(beacon)
             }
             
             checkLocation()
@@ -391,22 +391,22 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     /*
     (Delegate) リージョン内に入ったというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("didEnterRegion");
         
         // Rangingを始める
-        manager.startRangingBeaconsInRegion(self.beaconRegion);
+        manager.startRangingBeacons(in: self.beaconRegion);
         self.isBeaconRanging = true
     }
     
     /*
     (Delegate) リージョンから出たというイベントを受け取る.
     */
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         NSLog("didExitRegion");
         
         // Rangingを停止する
-        manager.stopRangingBeaconsInRegion(self.beaconRegion);
+        manager.stopRangingBeacons(in: self.beaconRegion);
         self.isBeaconRanging = false;
         
     }
@@ -425,25 +425,25 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         // 最も近いビーコンで計測する
         let beacon : CLBeacon = self.beaconLists[0] as! CLBeacon
         
-        let major = beacon.major.integerValue
-        let minor = beacon.minor.integerValue
+        let major = beacon.major.intValue
+        let minor = beacon.minor.intValue
         let rssi = beacon.rssi
         var proximity = ""
         
         switch (beacon.proximity) {
-        case CLProximity.Unknown:
+        case CLProximity.unknown:
             proximity = "不明"
             break;
             
-        case CLProximity.Far:
+        case CLProximity.far:
             proximity = "遠い"
             break;
             
-        case CLProximity.Near:
+        case CLProximity.near:
             proximity = "近い"
             break;
             
-        case CLProximity.Immediate:
+        case CLProximity.immediate:
             proximity = "極近い"
             break;
         }
@@ -452,7 +452,7 @@ class Recv3ViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         updateBeacon(msg)
         setCenter(msg)
         
-        let now = NSDate()
+        let now = Date()
         
         print(beacon.proximityUUID)
         print(beacon.major)

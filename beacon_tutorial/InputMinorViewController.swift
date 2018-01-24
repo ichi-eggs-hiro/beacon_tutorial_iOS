@@ -7,6 +7,30 @@
 //
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class InputMinorViewController: UIViewController,UITextFieldDelegate {
     
@@ -33,7 +57,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         super.viewDidLoad()
         
         // App Delegate を取得
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         self.scan_Minor = appDelegate.scan_minor
         if( self.scan_Minor == -1 ) {
@@ -49,36 +73,36 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         self.title = "監視Minor設定"
         
         // Viewの背景色を薄いグレー(#E6E6E6) に設定する。
-        self.scrView = UIScrollView(frame: CGRectMake(0,0,self.view.frame.width, self.view.frame.height) )
+        self.scrView = UIScrollView(frame: CGRect(x: 0,y: 0,width: self.view.frame.width, height: self.view.frame.height) )
         self.scrView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
         self.view.addSubview(self.scrView)
         
         var offset:CGFloat = 0.0
         
-        let lblDesc1:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc1:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc1.text = "監視対象ビーコン領域のMinor"
-        lblDesc1.textAlignment = NSTextAlignment.Left
-        lblDesc1.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc1.textAlignment = NSTextAlignment.left
+        lblDesc1.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc1.numberOfLines = 0
         lblDesc1.sizeToFit()
         scrView.addSubview(lblDesc1)
         offset += lblDesc1.frame.size.height + 10.0
         
-        lblMinor = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        lblMinor = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         if( self.isMinor == false ) {
             lblMinor.text = "未指定"
         } else {
             lblMinor.text = "Minor=\(self.scan_Minor)"
         }
-        lblMinor.textAlignment = NSTextAlignment.Left
-        lblMinor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblMinor.textAlignment = NSTextAlignment.left
+        lblMinor.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblMinor)
         offset += lblMinor.frame.size.height + 15.0
         
-        let lblDesc2:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc2:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc2.text = "Minor値を指定して監視する場合は、Minor値を指定するを選択してください。"
-        lblDesc2.textAlignment = NSTextAlignment.Left
-        lblDesc2.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc2.textAlignment = NSTextAlignment.left
+        lblDesc2.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc2.numberOfLines = 0
         lblDesc2.sizeToFit()
         scrView.addSubview(lblDesc2)
@@ -87,65 +111,65 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         // Swicthを作成する.
         switchMinor = UISwitch()
         switchMinor.layer.position = CGPoint(x: 40.0, y: offset + 10.0)
-        switchMinor.tintColor = UIColor.blackColor()
-        switchMinor.on = self.isMinor
-        switchMinor.addTarget(self, action: #selector(InputMinorViewController.onClickSwicth(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        switchMinor.tintColor = UIColor.black
+        switchMinor.isOn = self.isMinor
+        switchMinor.addTarget(self, action: #selector(InputMinorViewController.onClickSwicth(_:)), for: UIControlEvents.valueChanged)
         scrView.addSubview(switchMinor)
         
-        lblSwitchMinor = UILabel(frame: CGRectMake(70,offset,self.view.frame.width - 70, 20 ))
+        lblSwitchMinor = UILabel(frame: CGRect(x: 70,y: offset,width: self.view.frame.width - 70, height: 20 ))
         if( self.isMinor == false ) {
             lblSwitchMinor.text = "未指定"
         } else {
             lblSwitchMinor.text = "Minor値を指定する"
         }
-        lblSwitchMinor.textAlignment = NSTextAlignment.Left
-        lblSwitchMinor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblSwitchMinor.textAlignment = NSTextAlignment.left
+        lblSwitchMinor.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblSwitchMinor)
         
         offset += lblSwitchMinor.frame.size.height + 25.0
         
-        txtMinor = UITextField(frame: CGRectMake(50, offset, 160,30))
+        txtMinor = UITextField(frame: CGRect(x: 50, y: offset, width: 160,height: 30))
         txtMinor.text = ""
         txtMinor.delegate = self
         txtMinor.tag = 1
-        txtMinor.borderStyle = UITextBorderStyle.RoundedRect
-        txtMinor.keyboardType = UIKeyboardType.NumberPad
-        txtMinor.returnKeyType = UIReturnKeyType.Done
-        txtMinor.enabled = false
+        txtMinor.borderStyle = UITextBorderStyle.roundedRect
+        txtMinor.keyboardType = UIKeyboardType.numberPad
+        txtMinor.returnKeyType = UIReturnKeyType.done
+        txtMinor.isEnabled = false
         scrView.addSubview(txtMinor)
         
         offset += txtMinor.frame.size.height + 5.0
         
-        lblErr = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErr = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErr.text = "エラーメッセージ"
-        lblErr.textColor = UIColor.redColor()
-        lblErr.textAlignment = NSTextAlignment.Left
-        lblErr.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErr.textColor = UIColor.red
+        lblErr.textAlignment = NSTextAlignment.left
+        lblErr.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErr)
         
         offset += lblErr.frame.size.height + 15.0
         
         
-        let lblDesc3:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc3:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc3.text = "Minor値は 0〜65535 の範囲"
-        lblDesc3.textAlignment = NSTextAlignment.Left
-        lblDesc3.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc3.textAlignment = NSTextAlignment.left
+        lblDesc3.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc3.numberOfLines = 0
         lblDesc3.sizeToFit()
         scrView.addSubview(lblDesc3)
         offset += lblDesc3.frame.size.height + 15.0
         
-        btnSet = UIButton(frame: CGRectMake(20,offset,self.view.frame.size.width - 40,25.0))
-        btnSet.setTitle("設定", forState: .Normal)
-        btnSet.backgroundColor = UIColor.grayColor()
+        btnSet = UIButton(frame: CGRect(x: 20,y: offset,width: self.view.frame.size.width - 40,height: 25.0))
+        btnSet.setTitle("設定", for: UIControlState())
+        btnSet.backgroundColor = UIColor.gray
         btnSet.layer.masksToBounds = true
         btnSet.tag = 1
-        btnSet.addTarget(self, action: #selector(InputMinorViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        btnSet.addTarget(self, action: #selector(InputMinorViewController.onClickButton(_:)), for: .touchUpInside)
         scrView.addSubview(self.btnSet)
         
         offset += btnSet.frame.size.height + 15.0
         
-        scrView.contentSize = CGSizeMake(self.view.frame.width, offset + (self.view.frame.height / 2) )
+        scrView.contentSize = CGSize(width: self.view.frame.width, height: offset + (self.view.frame.height / 2) )
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(InputMinorViewController.tapGesture(_:)))
         self.scrView.addGestureRecognizer(tap)
@@ -154,17 +178,17 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         refresh()
     }
     
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(InputMinorViewController.onOrientationChange(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(InputMinorViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    @objc func onOrientationChange(_ notification: Notification){
         
     }
     
@@ -176,7 +200,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
     /*
     タップイベント.
     */
-    internal func tapGesture(sender: UITapGestureRecognizer){
+    @objc internal func tapGesture(_ sender: UITapGestureRecognizer){
         self.view.endEditing(true)
     }
     
@@ -193,19 +217,19 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         lblErr.text = ""
     }
     
-    internal func onClickSwicth(sender: UISwitch){
+    @objc internal func onClickSwicth(_ sender: UISwitch){
         
-        if sender.on {
+        if sender.isOn {
             lblSwitchMinor.text = "Minor値を指定する"
             isMinor = true
-            txtMinor.enabled = true
+            txtMinor.isEnabled = true
             
             
         }
         else {
             lblSwitchMinor.text = "未指定"
             isMinor = false
-            txtMinor.enabled = false
+            txtMinor.isEnabled = false
             
             
         }
@@ -213,14 +237,14 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
     /*
     UITextFieldが編集された直後に呼ばれるデリゲートメソッド.
     */
-    func textFieldDidBeginEditing(textField: UITextField){
+    func textFieldDidBeginEditing(_ textField: UITextField){
         print("textFieldDidBeginEditing:" + textField.text!)
     }
     
     /*
     UITextFieldが編集終了する直前に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         print("textFieldShouldEndEditing:" + textField.text!)
         
         isValid = false
@@ -248,7 +272,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         }
         
         isValid = true
-        self.scan_Minor = wkMinor
+        self.scan_Minor = wkMinor as NSNumber!
         refresh()
         
         return true
@@ -257,7 +281,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
     /*
     改行ボタンが押された際に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         return true
@@ -266,7 +290,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
     /*
     ボタンイベント
     */
-    internal func onClickButton(sender: UIButton){
+    @objc internal func onClickButton(_ sender: UIButton){
         
         self.view.endEditing(true)
 
@@ -294,18 +318,18 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         
     }
     
-    func isValidMinor(str: String) -> Bool {
+    func isValidMinor(_ str: String) -> Bool {
         let pattern = "^[0-9]+$"
         let ret = Regexp(pattern).isMatch(str)
         return ret
     }
     
-    func showAlert( msg:String ) {
+    func showAlert( _ msg:String ) {
         // UIAlertControllerを作成する.
-        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .Alert)
+        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .alert)
         
         // OKのアクションを作成する.
-        let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+        let myOkAction = UIAlertAction(title: "OK", style: .default) { action in
             print("Action OK!!")
         }
         
@@ -313,7 +337,7 @@ class InputMinorViewController: UIViewController,UITextFieldDelegate {
         myAlert.addAction(myOkAction)
         
         // UIAlertを発動する.
-        presentViewController(myAlert, animated: true, completion: nil)
+        present(myAlert, animated: true, completion: nil)
         
     }
     

@@ -10,14 +10,14 @@ import CoreLocation
 
 
 class log {
-    var UUID:NSUUID
+    var UUID:Foundation.UUID
     var major:NSNumber
     var minor:NSNumber
     var latitude:CLLocationDegrees
     var longitude:CLLocationDegrees
-    var date:NSDate
+    var date:Date
     
-    init(uuid:NSUUID,major:NSNumber,minor:NSNumber,lat:CLLocationDegrees,lon:CLLocationDegrees,dt:NSDate ) {
+    init(uuid:Foundation.UUID,major:NSNumber,minor:NSNumber,lat:CLLocationDegrees,lon:CLLocationDegrees,dt:Date ) {
         self.UUID = uuid
         self.major = major
         self.minor = minor

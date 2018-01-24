@@ -7,6 +7,30 @@
 //
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class InputMajorViewController: UIViewController,UITextFieldDelegate {
     
@@ -33,7 +57,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         super.viewDidLoad()
         
         // App Delegate を取得
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         self.scan_major = appDelegate.scan_major
         if( self.scan_major == -1 ) {
@@ -49,36 +73,36 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         self.title = "監視Major設定"
         
         // Viewの背景色を薄いグレー(#E6E6E6) に設定する。
-        self.scrView = UIScrollView(frame: CGRectMake(0,0,self.view.frame.width, self.view.frame.height) )
+        self.scrView = UIScrollView(frame: CGRect(x: 0,y: 0,width: self.view.frame.width, height: self.view.frame.height) )
         self.scrView.backgroundColor = UIColor(red: 230/255.0, green: 230/255.0, blue: 230/255.0, alpha: 1)
         self.view.addSubview(self.scrView)
         
         var offset:CGFloat = 0.0
         
-        let lblDesc1:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc1:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc1.text = "監視対象ビーコン領域のMajor"
-        lblDesc1.textAlignment = NSTextAlignment.Left
-        lblDesc1.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc1.textAlignment = NSTextAlignment.left
+        lblDesc1.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc1.numberOfLines = 0
         lblDesc1.sizeToFit()
         scrView.addSubview(lblDesc1)
         offset += lblDesc1.frame.size.height + 10.0
         
-        lblMajor = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        lblMajor = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         if( self.isMajor == false ) {
             lblMajor.text = "未指定"
         } else {
             lblMajor.text = "Major=\(self.scan_major)"
         }
-        lblMajor.textAlignment = NSTextAlignment.Left
-        lblMajor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblMajor.textAlignment = NSTextAlignment.left
+        lblMajor.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblMajor)
         offset += lblMajor.frame.size.height + 15.0
         
-        let lblDesc2:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc2:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc2.text = "Major値を指定して監視する場合は、Major値を指定するを選択してください。"
-        lblDesc2.textAlignment = NSTextAlignment.Left
-        lblDesc2.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc2.textAlignment = NSTextAlignment.left
+        lblDesc2.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc2.numberOfLines = 0
         lblDesc2.sizeToFit()
         scrView.addSubview(lblDesc2)
@@ -87,64 +111,64 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         // Swicthを作成する.
         switchMajor = UISwitch()
         switchMajor.layer.position = CGPoint(x: 40.0, y: offset + 10.0)
-        switchMajor.tintColor = UIColor.blackColor()
-        switchMajor.on = self.isMajor
-        switchMajor.addTarget(self, action: #selector(InputMajorViewController.onClickSwicth(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        switchMajor.tintColor = UIColor.black
+        switchMajor.isOn = self.isMajor
+        switchMajor.addTarget(self, action: #selector(InputMajorViewController.onClickSwicth(_:)), for: UIControlEvents.valueChanged)
         scrView.addSubview(switchMajor)
 
-        lblSwitchMajor = UILabel(frame: CGRectMake(70,offset,self.view.frame.width - 70, 20 ))
+        lblSwitchMajor = UILabel(frame: CGRect(x: 70,y: offset,width: self.view.frame.width - 70, height: 20 ))
         if( self.isMajor == false ) {
             lblSwitchMajor.text = "未指定"
         } else {
             lblSwitchMajor.text = "Major値を指定する"
         }
-        lblSwitchMajor.textAlignment = NSTextAlignment.Left
-        lblSwitchMajor.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblSwitchMajor.textAlignment = NSTextAlignment.left
+        lblSwitchMajor.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblSwitchMajor)
 
         offset += lblSwitchMajor.frame.size.height + 25.0
 
-        txtMajor = UITextField(frame: CGRectMake(50, offset, 160,30))
+        txtMajor = UITextField(frame: CGRect(x: 50, y: offset, width: 160,height: 30))
         txtMajor.text = ""
         txtMajor.delegate = self
         txtMajor.tag = 1
-        txtMajor.borderStyle = UITextBorderStyle.RoundedRect
-        txtMajor.keyboardType = UIKeyboardType.NumberPad
-        txtMajor.returnKeyType = UIReturnKeyType.Done
+        txtMajor.borderStyle = UITextBorderStyle.roundedRect
+        txtMajor.keyboardType = UIKeyboardType.numberPad
+        txtMajor.returnKeyType = UIReturnKeyType.done
         scrView.addSubview(txtMajor)
         
         offset += txtMajor.frame.size.height + 5.0
         
-        lblErr = UILabel(frame: CGRectMake(50,offset,self.view.frame.width - 60, 20 ))
+        lblErr = UILabel(frame: CGRect(x: 50,y: offset,width: self.view.frame.width - 60, height: 20 ))
         lblErr.text = "エラーメッセージ"
-        lblErr.textColor = UIColor.redColor()
-        lblErr.textAlignment = NSTextAlignment.Left
-        lblErr.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblErr.textColor = UIColor.red
+        lblErr.textAlignment = NSTextAlignment.left
+        lblErr.lineBreakMode = NSLineBreakMode.byWordWrapping
         scrView.addSubview(lblErr)
 
         offset += lblErr.frame.size.height + 15.0
 
         
-        let lblDesc3:UILabel = UILabel(frame: CGRectMake(10,offset,self.view.frame.width - 20, 20 ))
+        let lblDesc3:UILabel = UILabel(frame: CGRect(x: 10,y: offset,width: self.view.frame.width - 20, height: 20 ))
         lblDesc3.text = "Major値は 0〜65535 の範囲"
-        lblDesc3.textAlignment = NSTextAlignment.Left
-        lblDesc3.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblDesc3.textAlignment = NSTextAlignment.left
+        lblDesc3.lineBreakMode = NSLineBreakMode.byWordWrapping
         lblDesc3.numberOfLines = 0
         lblDesc3.sizeToFit()
         scrView.addSubview(lblDesc3)
         offset += lblDesc3.frame.size.height + 15.0
         
-        btnSet = UIButton(frame: CGRectMake(20,offset,self.view.frame.size.width - 40,25.0))
-        btnSet.setTitle("設定", forState: .Normal)
-        btnSet.backgroundColor = UIColor.grayColor()
+        btnSet = UIButton(frame: CGRect(x: 20,y: offset,width: self.view.frame.size.width - 40,height: 25.0))
+        btnSet.setTitle("設定", for: UIControlState())
+        btnSet.backgroundColor = UIColor.gray
         btnSet.layer.masksToBounds = true
         btnSet.tag = 1
-        btnSet.addTarget(self, action: #selector(InputMajorViewController.onClickButton(_:)), forControlEvents: .TouchUpInside)
+        btnSet.addTarget(self, action: #selector(InputMajorViewController.onClickButton(_:)), for: .touchUpInside)
         scrView.addSubview(self.btnSet)
         
         offset += btnSet.frame.size.height + 15.0
         
-        scrView.contentSize = CGSizeMake(self.view.frame.width, offset + (self.view.frame.height / 2) )
+        scrView.contentSize = CGSize(width: self.view.frame.width, height: offset + (self.view.frame.height / 2) )
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(InputMajorViewController.tapGesture(_:)))
         self.scrView.addGestureRecognizer(tap)
@@ -153,17 +177,17 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         refresh()
     }
     
-    override func viewWillAppear( animated: Bool ) {
+    override func viewWillAppear( _ animated: Bool ) {
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(InputMajorViewController.onOrientationChange(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(InputMajorViewController.onOrientationChange(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     // 端末の向きがかわったら呼び出される.
-    func onOrientationChange(notification: NSNotification){
+    @objc func onOrientationChange(_ notification: Notification){
         
     }
     
@@ -175,7 +199,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
     /*
     タップイベント.
     */
-    internal func tapGesture(sender: UITapGestureRecognizer){
+    @objc internal func tapGesture(_ sender: UITapGestureRecognizer){
         self.view.endEditing(true)
     }
     
@@ -183,30 +207,30 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         if( self.isMajor == false ) {
             lblMajor.text = "未指定"
             lblSwitchMajor.text = "未指定"
-            txtMajor.enabled = false
+            txtMajor.isEnabled = false
 
         } else {
             lblMajor.text = "Major=\(self.scan_major)"
             lblSwitchMajor.text = "Major値を指定する"
-            txtMajor.enabled = true
+            txtMajor.isEnabled = true
             txtMajor.text = "\(self.scan_major)"
         }
 
         lblErr.text = ""
     }
     
-    internal func onClickSwicth(sender: UISwitch){
+    @objc internal func onClickSwicth(_ sender: UISwitch){
         
-        if sender.on {
+        if sender.isOn {
             lblSwitchMajor.text = "Major値を指定する"
             isMajor = true
-            txtMajor.enabled = true
+            txtMajor.isEnabled = true
 
         }
         else {
             lblSwitchMajor.text = "未指定"
             isMajor = false
-            txtMajor.enabled = false
+            txtMajor.isEnabled = false
 
 
         }
@@ -214,14 +238,14 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
     /*
     UITextFieldが編集された直後に呼ばれるデリゲートメソッド.
     */
-    func textFieldDidBeginEditing(textField: UITextField){
+    func textFieldDidBeginEditing(_ textField: UITextField){
         print("textFieldDidBeginEditing:" + textField.text!)
     }
     
     /*
     UITextFieldが編集終了する直前に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         print("textFieldShouldEndEditing:" + textField.text!)
         
         isValid = false
@@ -249,7 +273,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         }
         
         isValid = true
-        self.scan_major = wkMajor
+        self.scan_major = wkMajor as NSNumber!
         refresh()
         
         return true
@@ -258,7 +282,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
     /*
     改行ボタンが押された際に呼ばれるデリゲートメソッド.
     */
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         return true
@@ -267,7 +291,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
     /*
     ボタンイベント
     */
-    internal func onClickButton(sender: UIButton){
+    @objc internal func onClickButton(_ sender: UIButton){
         
         self.view.endEditing(true)
 
@@ -295,18 +319,18 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         
     }
 
-    func isValidMajor(str: String) -> Bool {
+    func isValidMajor(_ str: String) -> Bool {
         let pattern = "^[0-9]+$"
         let ret = Regexp(pattern).isMatch(str)
         return ret
     }
     
-    func showAlert( msg:String ) {
+    func showAlert( _ msg:String ) {
         // UIAlertControllerを作成する.
-        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .Alert)
+        let myAlert: UIAlertController = UIAlertController(title: "Beacon入門", message: msg, preferredStyle: .alert)
         
         // OKのアクションを作成する.
-        let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+        let myOkAction = UIAlertAction(title: "OK", style: .default) { action in
             print("Action OK!!")
         }
         
@@ -314,7 +338,7 @@ class InputMajorViewController: UIViewController,UITextFieldDelegate {
         myAlert.addAction(myOkAction)
         
         // UIAlertを発動する.
-        presentViewController(myAlert, animated: true, completion: nil)
+        present(myAlert, animated: true, completion: nil)
         
     }
     
